@@ -1,18 +1,24 @@
 import { useState } from 'react';
-import { ScrollView, Text, StyleSheet, View} from 'react-native';
+import { ScrollView, Text, StyleSheet, View, Image} from 'react-native';
 import { Button, Dialog, Portal } from 'react-native-paper';
 
-export default function Painel({route, navigation}){ 
+export default function Painel({route}){ 
 
     const setAlert = () => {
         showDialog();
     }
         
-    const { user } = route.params;
-    const { score } = route.params;
+    const { userData } = route.params;
+    const { navigation } = route.params;
+
+    const user = userData.name;
+    const index = user.indexOf(' ') !== -1 ? user.indexOf(' ') : user.length;
+    const name = userData.name.slice(0, 1).toUpperCase() + userData.name.slice(1, index).toLowerCase();
+
+    const copos = Math.floor((0.035 * userData.peso) / 0.2);
 
     const gotoQuestionario = () => {
-        navigation.navigate('Questionario');
+        navigation.navigate('Questionario', {userData: userData, navigation: navigation});
 
     }
 
@@ -23,41 +29,18 @@ export default function Painel({route, navigation}){
     return(
         <ScrollView style={styles.container}>
             <View style={styles.header}>
-                <View style={styles.profile_picture}>
-                <Button icon='account' size='50' textColor='#FDF8EE' mode='text' onPress={() => {}}/>
-                </View>
-                <Text style={styles.header_text}>Bem Vindo(a)! {user}</Text>
+                <Text style={styles.header_text}>Bem Vindo(a)! {name}</Text>
             </View>
             <View style={styles.content}>
                 <View style={styles.card}>
                     <View style={styles.card_header}>
-                        <Button icon='cup-water' size='1000' textColor='#FDF8EE' mode='text' onPress={() => {}}/> 
                         <Text style={styles.card_title}>Água</Text>
                     </View>
-                    <Text style={styles.card_text}>Copos bebidos hoje: {score.agua[0]}</Text>
-                    <Text style={styles.card_text}>Faltam {score.agua[1] - score.agua[0]} copos.</Text>
-                    <Button 
-                    textColor='#FDF8EE'
-                    style={styles.card_button} 
-                    mode='outlined'
-                    onPress={() => {setAlert}}
-                    >Criar alerta</Button>
-                    <Portal>
-                        <Dialog visible={visible} onDismiss={() => {setVisible(false)}}>
-                            <Dialog.Title>Alerta de água</Dialog.Title>
-                            <Dialog.Content>
-                                <Text>Alerta criado!</Text>
-                            </Dialog.Content>
-                            <Dialog.Actions>
-                                <Button onPress={() => {hideDialog()}}>OK</Button>
-                            </Dialog.Actions>
-                        </Dialog>
-                    </Portal>
+                    <Text style={styles.card_text}>Você deve beber {copos} copos de agua diariamente.</Text>
                 </View>
-                <Button 
-                mode='outlined'
-                onPress={() => {gotoQuestionario()}}
-                >Refazer questionário</Button>
+                <Button mode='contained' onPress={gotoQuestionario} style={styles.button}>
+                    <Text style={styles.card_text}>Iniciar Questionário</Text>
+                </Button>
             </View>
         </ScrollView>
     );
@@ -95,13 +78,25 @@ const styles = StyleSheet.create({
     profile_picture:{
         width: 50,
         height: 50,
-        borderWidth: 2,
-        borderColor: '#FDF8EE',
-        borderRadius: 50,
+    },
+    logo: {
+        resizeMode: 'fit-content',
     },
     content: {
-        marginTop: 110,
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        marginTop: 120,
+        justifyContent: 'center',
         padding: 10,
+    },
+    button: {
+        justifyContent: 'center',
+        width: '100%',
+        height: 50,
+        position: 'flex-end',
+        backgroundColor: '#1F2D52',
+        borderRadius: 10,
     },
     card:{
         margin: 10,

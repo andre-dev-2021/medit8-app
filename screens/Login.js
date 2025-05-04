@@ -7,34 +7,39 @@ import { doc, getDoc } from 'firebase/firestore';
 
 export default function Login({navigation}){
 
-    const fetchUserFromFirestore = async (userId) => {
+    const fetchUser = async (userId) => {
         try {
             const userDoc = await getDoc(doc(db, 'users', userId)); // Fetch specific user by ID
             if (userDoc.exists()) {
                 const userData = userDoc.data();
                 return userData;
             } else {
-                return null; // Return null if user does not exist
+                return null; 
             }
         } catch (error) {
-            return null; // Return null in case of an error
+            return null; 
         }
     };
 
-    const [user, setUser] = useState();
+    const [email, setEmail] = useState();
     const [password, setPassword] = useState();
     const [aviso, setAviso] = useState('');
 
 
-    const handlePress = ({user, password}) =>{
-        if (user === undefined || password === undefined){
+    const handlePress = async ({email, password}) =>{
+        if (email === undefined || password === undefined){
             return setAviso('Preencha todos os campos!')
         }
-        const userData = fetchUserFromFirestore(user);
-        let userName = userData.name;
-        let userPassword = userData.password;
-        if (userName === user && userPassword === password){
-            navigation.navigate('Painel', {user});
+        
+        const userData = await fetchUser(email);
+
+        if (userData === null){
+            return setAviso('Usuário não encontrado!')
+        }else if (userData.password !== password){
+            return setAviso('Senha incorreta!');
+        }else{
+            setAviso('');
+            navigation.navigate('Painel', {userData: userData, navigation: navigation});
         }
     }
 
@@ -43,22 +48,23 @@ export default function Login({navigation}){
             <View style={styles.form_container}>
             <Text style={styles.welcome}>Bem Vindo(a) de volta!</Text>
                 <View style={styles.input_container}>
-                    <Text style={styles.label}>Usuario</Text>
+                    <Text style={styles.label}>Email:</Text>
                     <TextInput
-                    label={'Usuário'}
+                    label={'usuario@email.com'}
                     mode='outlined'
-                    placeholder='Digite seu usuário'
-                    onChangeText={text => setUser(text)}
-                    value={user}
+                    placeholder='usuario@email.com'
+                    onChangeText={text => setEmail(text)}
+                    value={email}
                     autoCapitalize='none'
                     />
                 </View>
                 <View style={styles.input_container}>
-                    <Text style={styles.label}>Senha</Text>
+                    <Text style={styles.label}>Senha:</Text>
                     <TextInput
                     label={'Senha'} 
                     mode='outlined'
-                    placeholder='Digite sua senha'
+                    placeholder='Informe sua senha'
+                    autoCapitalize='none'
                     secureTextEntry={true}
                     onChangeText={text => setPassword(text)}
                     value={password}
@@ -69,7 +75,7 @@ export default function Login({navigation}){
                     <Button 
                     style={styles.button}
                     textColor='#FDF8EE'
-                    onPress={() => handlePress({user, password})}>
+                    onPress={() => handlePress({email, password})}>
                     Entrar</Button>
                 </View>
             </View>
