@@ -1,108 +1,152 @@
-import React, { useState } from 'react';
-import { Button, ScrollView, Text, TextInput, View, StyleSheet, TouchableOpacity } from 'react-native';
+import { useState } from 'react';
+import { View, ScrollView, Text, StyleSheet } from 'react-native';
+import { Button, TextInput } from 'react-native-paper';
 
-export default function Cadastro({ navigation }) {
-    const [answers, setAnswers] = useState({
-        textAnswer: '',
-        radioAnswer: null,
-    });
 
-    const handleTextChange = (value) => {
-        setAnswers((prev) => ({ ...prev, textAnswer: value }));
-    };
+export default function Login({navigation}){
+    const [user, setUser] = useState();
+    const [password, setPassword] = useState();
+    const [peso, setPeso] = useState(0);
+    const [idade, setIdade] = useState(0);
+    const [aviso, setAviso] = useState('');
 
-    const handleRadioChange = (value) => {
-        setAnswers((prev) => ({ ...prev, radioAnswer: value }));
-    };
+    const confirmPassword = (password, confirmPassword) => {
+        if (password !== confirmPassword){
+            setAviso('As senhas não conferem!');
+        }else{
+            setAviso('');
+        }
+    }
 
-    const calculateScore = () => {
-        let score = 0;
+    const handlePress = () =>{
+        if (user === undefined || password === undefined || peso === 0 || idade === 0){
+            return setAviso('Preencha todos os campos!');
+        }else if (peso < 0 || idade < 0){
+            return setAviso('Peso ou idade inválidos!');
+        }else if (peso > 300 || idade > 120){
+            return setAviso('Peso ou idade inválidos!');
+        }else if (password.length < 6){
+            return setAviso('A senha deve ter no mínimo 6 caracteres!');
+        }else{
+            setAviso('');
+            navigation.navigate('Questionario');
+        }
+    }
 
-        // Example scoring logic
-        if (answers.textAnswer.length > 5) score += 10; // Add points for text input length
-        if (answers.radioAnswer === 'option2') score += 20; // Add points for specific radio selection
-
-        return score;
-    };
-
-    const handleSubmit = () => {
-        const score = calculateScore();
-        console.log('Answers:', answers);
-        console.log('Score:', score);
-        navigation.navigate('Painel');
-    };
-
-    return (
-        <ScrollView contentContainerStyle={styles.container}>
-            <Text style={styles.title}>Questionnaire</Text>
-
-            {/* Text Input */}
-            <View style={styles.questionContainer}>
-                <Text style={styles.questionText}>1. Enter some text:</Text>
-                <TextInput
-                    style={styles.input}
-                    placeholder="Type your answer here"
-                    value={answers.textAnswer}
-                    onChangeText={handleTextChange}
-                />
+    return(
+        <ScrollView style={styles.container}>
+            <View style={styles.form_container}>
+            <Text style={styles.welcome}>Comece a monitorar sua saúde.</Text>
+                <View style={styles.input_container}>
+                    <Text style={styles.label}>Usuário</Text>
+                    <TextInput
+                    label={'Usuário'}
+                    mode='outlined'
+                    placeholder='Digite seu usuário'
+                    onChangeText={text => setUser(text)}
+                    value={user}
+                    autoCapitalize='none'
+                    />
+                </View>
+                <View style={styles.input_container}>
+                    <Text style={styles.label}>Senha</Text>
+                    <TextInput
+                    label={'Senha'} 
+                    mode='outlined'
+                    placeholder='Digite sua senha'
+                    secureTextEntry={true}
+                    onChangeText={text => setPassword(text)}
+                    value={password}
+                    />
+                </View>
+                <View style={styles.input_container}>
+                    <Text style={styles.label}>Confirme sua senha</Text>
+                    <TextInput
+                    label={'Confirme sua senha'} 
+                    mode='outlined'
+                    placeholder='Confirme sua senha'
+                    secureTextEntry={true}
+                    onChangeText={text => confirmPassword(text, password)}
+                    />
+                </View>
+                <View style={styles.input_container}>
+                    <Text style={styles.label}>Peso</Text>
+                    <TextInput
+                    label={'Insira seu peso'} 
+                    mode='outlined'
+                    placeholder='Insira seu peso'
+                    keyboardType='numeric'
+                    onChangeText={num => setPeso(num)}
+                    value={peso}
+                    />
+                </View>
+                <View style={styles.input_container}>
+                    <Text style={styles.label}>Idade</Text>
+                    <TextInput
+                    label={'Insira sua idade'} 
+                    mode='outlined'
+                    placeholder='Insira sua idade'
+                    keyboardType='numeric'
+                    onChangeText={num => setIdade(num)}
+                    value={idade}
+                    />
+                </View>
+                <Text style={styles.aviso}>{aviso}</Text>
+                <View style={styles.buttons}>
+                    <Button 
+                    style={styles.button}
+                    textColor='#FDF8EE'
+                    onPress={() => handlePress({user, password, peso, idade})}>
+                    Iniciar questionário</Button>
+                </View>
             </View>
-
-            {/* Radio Group */}
-            <View style={styles.questionContainer}>
-                <Text style={styles.questionText}>2. Choose an option:</Text>
-                {['option1', 'option2', 'option3'].map((option) => (
-                    <TouchableOpacity
-                        key={option}
-                        style={[
-                            styles.radioOption,
-                            answers.radioAnswer === option && styles.radioSelected,
-                        ]}
-                        onPress={() => handleRadioChange(option)}
-                    >
-                        <Text style={styles.radioText}>{option}</Text>
-                    </TouchableOpacity>
-                ))}
-            </View>
-
-            <Button title="Submit" onPress={handleSubmit} />
         </ScrollView>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        padding: 20,
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        flex: 1,
+        backgroundColor: '#FDF8EE',
     },
-    title: {
-        fontSize: 24,
+    welcome:{
+        fontSize: 35,
         fontWeight: 'bold',
+        color: '#1F2D52',
+        marginTop: 20,
         marginBottom: 20,
     },
-    questionContainer: {
-        marginBottom: 20,
+    form_container: {
+        margin: 2,
+        marginTop: '10%',
+        padding: 10,
+        display: 'flex',
     },
-    questionText: {
-        fontSize: 16,
-        marginBottom: 10,
-    },
-    input: {
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 5,
+    input_container: {
         padding: 10,
     },
-    radioOption: {
-        padding: 10,
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 5,
-        marginBottom: 10,
+    label: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: '#1F2D52',
     },
-    radioSelected: {
-        backgroundColor: '#d3f9d8',
-        borderColor: '#4caf50',
+    buttons: {
+        display: 'flex',
+        flexDirection: 'reverse-row',
+        alignItems: 'flex-end',
     },
-    radioText: {
-        fontSize: 16,
+    button: {
+        margin: 5,
+        justifyContent: 'center',
+        width: '50%',
+        height: 50,
+        backgroundColor: '#1F2D52',
+    },
+    aviso: {
+        color: '#FF0000',
+        fontSize: 10,
     },
 });

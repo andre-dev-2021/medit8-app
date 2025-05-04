@@ -17,14 +17,14 @@ export default function Inicial({ navigation }){
             <View style={styles.buttons}>
                 <Button 
                 textColor='#FDF8EE'
+                onPress={gotoLogin}
+                style={styles.login_button}> 
+                <Text style={styles.label}>Entrar</Text></Button>
+                <Button 
+                textColor='#1F2D52'
                 onPress={gotoCadastro}
                 style={styles.sign_button}> 
                 <Text style={styles.label}>Cadastre-se</Text></Button>
-                <Button 
-                textColor='#FDF8EE'
-                onPress={gotoLogin}
-                style={styles.login_button}> 
-                <Text style={styles.label}>Login</Text></Button>
             </View>
         </View>
     );
@@ -37,34 +37,36 @@ const styles = StyleSheet.create({
         display: 'flex',
         flex: 1,
         backgroundColor: '#FDF8EE',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     logo: {
         width: '300',
         height: '300',
         resizeMode: 'contain',
-        alignSelf: 'center',
-        marginTop: '20%',
     },
     buttons: {
+        width: '100%',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        marginTop: '100',
     },
     login_button: {
         margin: 5,
         justifyContent: 'center',
         width: '75%',
         height: 50,
-        backgroundColor: '#5FB3F3',
+        backgroundColor: '#1F2D52',
     },
     sign_button: {
         margin: 5,
         justifyContent: 'center',
         width: '75%',
         height: 50,
-        backgroundColor: '#BC75EB',
+        borderWidth: 2,
+        borderColor: '#1F2D52',
+        backgroundColor: '#FDF8EE',
     },
     label: {
         fontSize: 20,

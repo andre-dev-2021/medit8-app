@@ -5,6 +5,7 @@ import Inicial from './screens/Inicial';
 import Cadastro from './screens/Cadastro';
 import Painel from './screens/Painel';
 import Login from './screens/Login';
+import Questionario from './screens/Questionario'
 
 const Stack = createNativeStackNavigator();
 
@@ -12,11 +13,12 @@ export default function App() {
   return (
     <PaperProvider>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName='Inicial'>
+        <Stack.Navigator screenOptions={{headerShown:false}}initialRouteName='Inicial'>
           <Stack.Screen name='Inicial' component={Inicial}/>
           <Stack.Screen name='Cadastro' component={Cadastro}/>
           <Stack.Screen name='Painel' component={Painel}/>
           <Stack.Screen name='Login' component={Login}/>
+          <Stack.Screen name='Questionario' component={Questionario}/>
         </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>
