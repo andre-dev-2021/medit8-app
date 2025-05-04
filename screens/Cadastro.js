@@ -53,6 +53,9 @@ export default function Login({navigation}){
                 password: password,
                 peso: peso,
                 idade: idade,
+                respondeuQuestionario: false,
+                respostas: [],
+                ultimaResposta: new Date(),
             }
             
             const userExist = await addUser(email, userData);

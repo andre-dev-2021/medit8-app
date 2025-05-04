@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ScrollView, Text, StyleSheet, View, Image} from 'react-native';
 import { Button, Dialog, Portal } from 'react-native-paper';
+import WaterCard from '../components/Cardss';
 
 export default function Painel({route}){ 
 
@@ -15,7 +16,8 @@ export default function Painel({route}){
     const index = user.indexOf(' ') !== -1 ? user.indexOf(' ') : user.length;
     const name = userData.name.slice(0, 1).toUpperCase() + userData.name.slice(1, index).toLowerCase();
 
-    const copos = Math.floor((0.035 * userData.peso) / 0.2);
+    const respondeuQuestionario = userData.respondeuQuestionario;
+
 
     const gotoQuestionario = () => {
         navigation.navigate('Questionario', {userData: userData, navigation: navigation});
@@ -26,21 +28,29 @@ export default function Painel({route}){
     const showDialog = () => setVisible(true);
     const hideDialog = () => setVisible(false);
 
+    if (respondeuQuestionario === false){
+        return(
+            <ScrollView style={styles.container}>
+                <View style={styles.header}>
+                    <Text style={styles.header_text}>Bem Vindo(a)! {name}</Text>
+                </View>
+                <View style={styles.content}>
+                    <Text>Você ainda não respondeu o questionário.</Text>
+                    <Button mode='contained' onPress={gotoQuestionario} style={styles.button}>
+                        <Text style={styles.card_text}>Responder agora.</Text>
+                    </Button>
+                </View>
+            </ScrollView>
+        );
+    }
+    
     return(
         <ScrollView style={styles.container}>
             <View style={styles.header}>
                 <Text style={styles.header_text}>Bem Vindo(a)! {name}</Text>
             </View>
             <View style={styles.content}>
-                <View style={styles.card}>
-                    <View style={styles.card_header}>
-                        <Text style={styles.card_title}>Água</Text>
-                    </View>
-                    <Text style={styles.card_text}>Você deve beber {copos} copos de agua diariamente.</Text>
-                </View>
-                <Button mode='contained' onPress={gotoQuestionario} style={styles.button}>
-                    <Text style={styles.card_text}>Iniciar Questionário</Text>
-                </Button>
+                <WaterCard color='#579AEC' peso={userData.peso}/>
             </View>
         </ScrollView>
     );
@@ -98,29 +108,4 @@ const styles = StyleSheet.create({
         backgroundColor: '#1F2D52',
         borderRadius: 10,
     },
-    card:{
-        margin: 10,
-        width: '90%',
-        backgroundColor: '#579AEC',
-        padding: 10,
-        borderRadius: 10,
-    },
-    card_title:{
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: '#FDF8EE',
-    },
-    card_text:{
-        fontSize: 15,
-        color: '#FDF8EE',
-    },
-    card_button:{
-        marginTop: 10,
-        backgroundColor: '#1F2D52',
-    },
-    card_header:{
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-    }
 })
