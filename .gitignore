@@ -5,6 +5,8 @@ node_modules/
 
 eas.json
 
+firebase/env.env
+
 # Expo
 .expo/
 dist/
