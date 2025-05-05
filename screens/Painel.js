@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { ScrollView, Text, StyleSheet, View, Image} from 'react-native';
 import { Button, Dialog, Portal } from 'react-native-paper';
-import WaterCard from '../components/Cardss';
+import { WaterCard } from '../components/Cards';
+import { NutricaoCard } from '../components/Cards';
 
 export default function Painel({route}){ 
 
@@ -50,7 +51,8 @@ export default function Painel({route}){
                 <Text style={styles.header_text}>Bem Vindo(a)! {name}</Text>
             </View>
             <View style={styles.content}>
-                <WaterCard color='#579AEC' peso={userData.peso}/>
+                <WaterCard peso={userData.peso}/>
+                <NutricaoCard/>
             </View>
         </ScrollView>
     );
